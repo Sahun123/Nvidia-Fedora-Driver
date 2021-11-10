@@ -1,10 +1,9 @@
-ARG FEDORA_VERSION=32
+ARG FEDORA_VERSION=34
 FROM fedora:$FEDORA_VERSION
 
 RUN dnf install -y \
         ca-certificates \
         curl \
-        gcc \
         glibc.i686 \
         make \
         cpio \
@@ -18,7 +17,7 @@ RUN curl -fsSL -o /usr/local/bin/donkey https://github.com/3XX0/donkey/releases/
 
 #ARG BASE_URL=http://us.download.nvidia.com/XFree86/Linux-x86_64
 ARG BASE_URL=https://us.download.nvidia.com/tesla
-ARG DRIVER_VERSION=450.80.02
+ARG DRIVER_VERSION=470.57.02
 ENV DRIVER_VERSION=$DRIVER_VERSION
 
 RUN ln -s /sbin/ldconfig /sbin/ldconfig.real
