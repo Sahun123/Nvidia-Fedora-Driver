@@ -101,7 +101,8 @@ _install_prerequisites() (
     depmod ${KERNEL_VERSION}
 
     echo "Generating Linux kernel version string..."
-    extract-vmlinux ./lib/modules/${KERNEL_VERSION}/vmlinuz | strings | grep -E '^Linux version' | sed 's/^\(.*\)\s\+(.*)$/\1/' > version
+    # extract-vmlinux ./lib/modules/${KERNEL_VERSION}/vmlinuz | strings | grep -E '^Linux version' | sed 's/^\(.*\)\s\+(.*)$/\1/' > version
+    echo "Linux version 5.11.20-300.fc34.x86_64 (mockbuild@bkernel01.iad2.fedoraproject.org) (gcc (GCC) 11.1.1 20210428 (Red Hat 11.1.1-1), GNU ld version 2.35.1-41.fc34)" > version
     if [ -z "$(<version)" ]; then
         echo "Could not locate Linux kernel version string" >&2
         return 1
@@ -111,13 +112,16 @@ _install_prerequisites() (
     # Parse gcc version
     # gcc_version is expected to match x.y.z
     # current_gcc is expected to match 'gcc-x.y.z-rel.el8.x86_64
-    local gcc_version=$(cat /lib/modules/${KERNEL_VERSION}/proc/version | grep -Eo "gcc version ([0-9\.]+)" | grep -Eo "([0-9\.]+)")
+    local gcc_version=11.1.1-1.fc34.x86_64
     local current_gcc=$(rpm -qa gcc)
-    echo "kernel requires gcc version: 'gcc-${gcc_version}', current gcc version is '${current_gcc}'"
+    #echo "kernel requires gcc version: 'gcc-${gcc_version}', current gcc version is '${current_gcc}'"
 
-    if [[ "gcc-${gcc_version}" != "${current_gcc}"* ]]; then
-        dnf install -q -y "gcc-${gcc_version}"
-    fi
+    #if [[ "gcc-${gcc_version}" != "${current_gcc}"* ]]; then
+    #   dnf install -q -y "gcc-${gcc_version}"
+    #fi
+    dnf -q -y install https://kojipkgs.fedoraproject.org/packages/gcc/11.1.1/1.fc34/x86_64/libgomp-11.1.1-1.fc34.x86_64.rpm
+    dnf -q -y install https://kojipkgs.fedoraproject.org/packages/gcc/11.1.1/1.fc34/x86_64/cpp-11.1.1-1.fc34.x86_64.rpm
+    dnf -q -y install https://kojipkgs.fedoraproject.org/packages/gcc/11.1.1/1.fc34/x86_64/gcc-11.1.1-1.fc34.x86_64.rpm
 )
 
 # Cleanup the prerequisites installed above.
